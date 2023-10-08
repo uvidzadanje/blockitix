@@ -1,0 +1,7 @@
+<div id="wrapp">
+  <button mat-button color="primary" (click)="showCreate()"><span>+</span></button>
+  <h2 *ngIf="!events.length">There are not events currently</h2>
+  <div *ngIf="events.length" class="events">
+    <app-event *ngFor="let event of events" [event]="event" class="card"></app-event>
+  </div>
+</div>

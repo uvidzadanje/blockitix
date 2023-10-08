@@ -1,0 +1,28 @@
+.container {
+  min-width: 300px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, calc(25% - 20px));
+  grid-template-rows: 1fr;
+  gap: 20px;
+  justify-content: center;
+}
+.taken-seat, .untaken-seat {
+  margin: 0 auto;
+}
+.untaken-seat {
+  width: 64px;
+  height: 64px;
+  background-color: lightblue;
+  border-radius: 5%;
+  padding: 0;
+  border: 2px solid blue;
+}
+
+.taken-seat {
+  width: 64px;
+  height: 64px;
+  background-color: lightcoral;
+  border-radius: 5%;
+  padding: 0;
+  border: 2px solid red;
+}

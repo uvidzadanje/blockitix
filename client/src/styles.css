@@ -1,0 +1,29 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+#wrapp {
+  max-width: 1000px;
+  height: 100%;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.error {
+  background-color: #D0342C;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.error h3 {
+  margin: 0;
+}
+
+.expansion-panel {
+  margin: 10px auto;
+  max-width: 500px;
+}

@@ -1,0 +1,13 @@
+<div mat-dialog-content>
+  <h2 mat-dialog-title>Chose a seat</h2>
+  <div mat-dialog-content class="container">
+    <button
+    mat-button
+    *ngFor="let seat of allSeats"
+    [ngClass]="seat.isTaken ? 'taken-seat' : 'untaken-seat'"
+    [disabled]="seat.isTaken"
+    [color]="seat.isTaken ? 'warn' : 'primary'"
+    (click)="buyTicket(seat.seat)"
+    >{{seat.seat}}</button>
+  </div>
+</div>
