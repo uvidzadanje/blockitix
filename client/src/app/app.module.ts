@@ -22,10 +22,12 @@ import { MatCardModule } from '@angular/material/card';
 import { CreateComponent } from './pages/events/create/create.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from "@angular/material/select";
 import { ReactiveFormsModule } from '@angular/forms';
 import { TicketComponent } from './pages/events/event/ticket/ticket.component';
 import { LoadingComponent } from './components/parts/loading/loading.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { RegisterComponent } from './pages/auth/register/register.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CreateComponent,
     TicketComponent,
     LoadingComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,6 +56,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatDialogModule,
     MatCardModule,
     MatFormFieldModule,
+    MatSelectModule,
     MatInputModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule

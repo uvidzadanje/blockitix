@@ -10,6 +10,8 @@ import { TicketComponent } from './ticket/ticket.component';
 })
 export class EventComponent implements OnInit {
   @Input() event?: Event;
+  @Input() isOwner?: boolean;
+  @Input() isCreator?: boolean;
 
   constructor(private dialog: MatDialog) { }
 

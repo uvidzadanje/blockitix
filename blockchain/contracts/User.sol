@@ -12,8 +12,8 @@ contract User {
 
     struct UserData {
         address userAddress;
-
         Role role;
+        string fullname;
     }
 
     event UserCreated(address indexed user);
@@ -31,9 +31,12 @@ contract User {
         require(false, "Role is not valid!");
     }
 
-    function create(Role role) external ValidRole(role)
+    function create(
+        Role role, 
+        string memory fullname
+    ) external
     {
-        users[msg.sender] = UserData(msg.sender, role);
+        users[msg.sender] = UserData(msg.sender, role, fullname);
 
         usersAddresses.push(msg.sender);
 

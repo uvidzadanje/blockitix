@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BlockitixContractService } from 'src/app/shared/services/blockitix-contract.service';
 import { LoadingService } from 'src/app/shared/services/loading.service';
 import { TicketService } from 'src/app/shared/services/ticket.service';
 import { Web3Service } from 'src/app/shared/services/web3.service';
@@ -31,7 +32,7 @@ export class TicketComponent implements OnInit {
     private dialogRef: MatDialogRef<TicketComponent>,
     @Inject(MAT_DIALOG_DATA) data: Data,
     private ticketService: TicketService,
-    private web3Service: Web3Service,
+    private blockitixContractService: BlockitixContractService,
     private loadingService: LoadingService
   ) {
     this.eventId = data.eventId;
@@ -40,9 +41,7 @@ export class TicketComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    await this.web3Service.onEvent('BoughtTicket', async (ticketId, seat) => {
-      console.log('ticketId', ticketId);
-      console.log('seat', seat);
+    await this.blockitixContractService.onEvent('BoughtTicket', async (ticketId, seat) => {
       this.seatsTaken = [...this.seatsTaken, Number(seat)];
       this.allSeats = Array(Number(this.totalTickets))
         .fill(0)

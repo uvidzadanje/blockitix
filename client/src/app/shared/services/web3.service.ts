@@ -1,21 +1,14 @@
 import { Injectable } from '@angular/core';
-import { ethers } from 'ethers';
-import { environment } from 'src/environments/environment';
+import { ConstructorFragment, ethers } from 'ethers';
 import { AlertService } from '../../components/parts/alert/alert.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class Web3Service {
+export abstract class Web3Service {
   constructor(private alertService: AlertService) { }
 
-  async createBlockitixEthereumContract() {
-    return await this.createEthereumContract(environment.blockitixContractAddress, environment.blockitixAbi);
-  };
-
-  async createUserEthereumContract() {
-    return await this.createEthereumContract(environment.userContractAddress, environment.userABI);
-  }
+  public abstract get Contract() : Promise<ethers.Contract>;
 
   async createEthereumContract(address: string, abi: any)
   {
@@ -29,7 +22,7 @@ export class Web3Service {
   async execute<Type>(method: string, ...args: any[]) : Promise<Type | null>
   {
     try {
-      const contract = await this.createBlockitixEthereumContract();
+      const contract = await this.Contract;
 
       const data = await contract.getFunction(method)(...args);
 
@@ -43,7 +36,7 @@ export class Web3Service {
   async executeWithOptions<Type>(method: string, options: { value: any }, args: any[] = []) : Promise<Type | null>
   {
     try {
-      const contract = await this.createBlockitixEthereumContract();
+      const contract = await this.Contract;
 
       const data = await contract.getFunction(method)(...args, {
         value: ethers.parseEther(options.value)
@@ -59,7 +52,7 @@ export class Web3Service {
   async onEvent(event:string, onEventFunction: (...args: any) => any)
   {
     try {
-      const contract = await this.createBlockitixEthereumContract();
+      const contract = await this.Contract;
 
       await contract.on(event, onEventFunction);
     } catch (error: any) {

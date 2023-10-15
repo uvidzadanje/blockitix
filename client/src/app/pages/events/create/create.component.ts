@@ -28,7 +28,7 @@ export class CreateComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  constructor(private dialogRef: MatDialogRef<CreateComponent>, private eventService: EventService, private web3Service: Web3Service) { }
+  constructor(private dialogRef: MatDialogRef<CreateComponent>, private eventService: EventService) { }
 
   ngOnInit(): void {
 

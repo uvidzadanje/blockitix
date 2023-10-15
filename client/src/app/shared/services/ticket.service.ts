@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ethers } from 'ethers';
 import { Ticket } from '../models/ticket';
+import { BlockitixContractService } from './blockitix-contract.service';
 import { Web3Service } from './web3.service';
 
 
@@ -8,21 +9,21 @@ import { Web3Service } from './web3.service';
   providedIn: 'root'
 })
 export class TicketService {
-  constructor(private web3Service: Web3Service) { }
+  constructor(private blockitixContractService: BlockitixContractService) { }
 
   async getTakenSeats(eventId: number): Promise<number[] | null>
   {
-    return await this.web3Service.execute("getTakenSeats", eventId);
+    return await this.blockitixContractService.execute("getTakenSeats", eventId);
   }
 
   async getTicketById(ticketId: number)
   {
-    return await this.web3Service.execute<Ticket>("getTicketById", ticketId);
+    return await this.blockitixContractService.execute<Ticket>("getTicketById", ticketId);
   }
 
   async buyTicket(eventId: number, seat: number, price: number): Promise<void>
   {
-    const contract = await this.web3Service.createBlockitixEthereumContract();
+    const contract = await this.blockitixContractService.Contract;
     // return await this.web3Service.executeWithOptions("buyTicket", {value: `${price}`}, [eventId, seat]);
     await (contract as any).buyTicket(eventId, seat, {value: `${price}`});
 

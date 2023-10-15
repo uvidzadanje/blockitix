@@ -1,0 +1,16 @@
+<div id="wrapp">
+  <form [formGroup]="form" class="form" (ngSubmit)="register()">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <mat-select formControlName="role" matInput>
+        <mat-option *ngFor="let role of roles" [value]="role.key">{{role.value}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Full Name</mat-label>
+      <input matInput formControlName="fullname">
+    </mat-form-field>
+    <button mat-button color="primary" [disabled]="!form.valid">Register</button>
+  </form>
+  <p>register works!</p>
+</div>
