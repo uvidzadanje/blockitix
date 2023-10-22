@@ -29,7 +29,6 @@ import { LoadingComponent } from './components/parts/loading/loading.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { SeatGeneratorComponent } from './pages/seat-generator/seat-generator.component';
-import { LayoutComponent } from './pages/seat-generator/layout/layout.component';
 
 @NgModule({
   declarations: [
@@ -43,8 +42,7 @@ import { LayoutComponent } from './pages/seat-generator/layout/layout.component'
     TicketComponent,
     LoadingComponent,
     RegisterComponent,
-    SeatGeneratorComponent,
-    LayoutComponent
+    SeatGeneratorComponent
   ],
   imports: [
     BrowserModule,
