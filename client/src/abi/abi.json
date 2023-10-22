@@ -859,6 +859,11 @@
           "internalType": "enum User.Role",
           "name": "role",
           "type": "uint8"
+        },
+        {
+          "internalType": "string",
+          "name": "fullname",
+          "type": "string"
         }
       ],
       "name": "create",
@@ -881,6 +886,11 @@
               "internalType": "enum User.Role",
               "name": "role",
               "type": "uint8"
+            },
+            {
+              "internalType": "string",
+              "name": "fullname",
+              "type": "string"
             }
           ],
           "internalType": "struct User.UserData",

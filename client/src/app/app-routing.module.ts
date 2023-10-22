@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuardService } from './auth/auth-guard.service';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { EventsComponent } from './pages/events/events.component';
+import { SeatGeneratorComponent } from './pages/seat-generator/seat-generator.component';
 
 const routes: Routes = [
   {
@@ -13,6 +14,10 @@ const routes: Routes = [
   {
     path: "register",
     component: RegisterComponent
+  },
+  {
+    path: "generator",
+    component: SeatGeneratorComponent
   }
 ];
 

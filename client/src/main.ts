@@ -4,6 +4,11 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
+import '@deckdeckgo/drag-resize-rotate';
+
+import { defineCustomElements as deckDeckGoElement } from '@deckdeckgo/drag-resize-rotate/dist/loader';
+deckDeckGoElement();
+
 if (environment.production) {
   enableProdMode();
 }

@@ -1,0 +1,30 @@
+.seat {
+  width: 10px;
+  height: 10px;
+  border-radius: 5%;
+  padding: 0;
+  border-width: 2px;
+  border-style: solid;
+}
+
+.seat {
+  background-color: transparent;
+  border-color: gray;
+}
+
+.row {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.form {
+  display: flex;
+  gap: 20px;
+}
+
+:host {
+  flex-grow: 1;
+}

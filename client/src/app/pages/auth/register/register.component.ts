@@ -24,7 +24,7 @@ export class RegisterComponent implements OnInit {
   }
 
   async register() {
-    this.authService.register(this.form.value);
+    this.authService.register({role: this.form.value.role, fullname: this.form.value.fullname});
     this.router.navigate(['events']);
   }
 

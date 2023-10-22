@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -28,6 +28,8 @@ import { TicketComponent } from './pages/events/event/ticket/ticket.component';
 import { LoadingComponent } from './components/parts/loading/loading.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RegisterComponent } from './pages/auth/register/register.component';
+import { SeatGeneratorComponent } from './pages/seat-generator/seat-generator.component';
+import { LayoutComponent } from './pages/seat-generator/layout/layout.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +43,8 @@ import { RegisterComponent } from './pages/auth/register/register.component';
     TicketComponent,
     LoadingComponent,
     RegisterComponent,
+    SeatGeneratorComponent,
+    LayoutComponent
   ],
   imports: [
     BrowserModule,
@@ -63,5 +67,6 @@ import { RegisterComponent } from './pages/auth/register/register.component';
   ],
   providers: [],
   bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule {}

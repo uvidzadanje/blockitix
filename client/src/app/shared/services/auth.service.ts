@@ -23,6 +23,10 @@ export class AuthService {
   {
     let user = await this.getUser();
 
+    console.log(user?.userAddress);
+
+    console.log(user?.userAddress !== ethers.ZeroAddress)
+
     return user?.userAddress !== ethers.ZeroAddress;
   }
 
@@ -35,6 +39,7 @@ export class AuthService {
 
   async register(user: CreateUser)
   {
+    console.log(user);
     try {
       return await this.userContractService.execute("create", user.role, user.fullname);
     } catch (error: any) {

@@ -1,0 +1,86 @@
+<div id="wrapp" style="gap: 20px;">
+  <div style="display: flex; flex-direction: column; gap: 50px;">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Set seat layout</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form (submit)="addLayout(formLayoutDirective)" [formGroup]="layoutForm" class="form" #formLayoutDirective="ngForm">
+          <mat-form-field class="input-group">
+            <mat-label>Number of rows</mat-label>
+            <input matInput type="number" min="1" step="1" formControlName="rows">
+          </mat-form-field>
+          <mat-form-field class="input-group">
+            <mat-label>Number of columns</mat-label>
+            <input matInput type="number" min="1" step="1" formControlName="columns">
+          </mat-form-field>
+          <mat-form-field class="input-group">
+            <mat-label>Name</mat-label>
+            <input matInput type="text" formControlName="name">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Layout type</mat-label>
+            <mat-select formControlName="type" matInput>
+              <mat-option *ngFor="let type of types; index as i" [value]="i">{{type.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-button color="primary" [disabled]="!layoutForm.valid || !layoutForm.touched || !layoutForm.dirty">Add layout</button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Add new ticket type</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="typeForm" (submit)="addType(formTypeDirective)" class="form" #formTypeDirective="ngForm">
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput type="text" formControlName="name">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Mark color</mat-label>
+            <input matInput type="color" formControlName="color">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Price</mat-label>
+            <input matInput type="number" formControlName="price" placeholder="In ETH">
+          </mat-form-field>
+          <button mat-button color="primary" [disabled]="!typeForm.valid || !typeForm.touched || !typeForm.dirty">Add new type</button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+    <mat-card *ngIf="types.length !== 0">
+      <mat-card-header>
+        <mat-card-title>Ticket types</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngFor="let type of types; index as i" style="display: flex; gap: 10px; align-items: center; cursor: pointer;">
+          <div class="seat" [style]="'background-color:'+type.color" style="border:none"></div>
+          <span>{{type.name}}</span>
+          <button mat-button color="warn" (click)="removeType(i)"><mat-icon>close</mat-icon></button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div style="position: relative; width: 100%; flex-grow: 1;" class="canvas">
+      <deckgo-drr
+      *ngFor="let layout of layouts; index as i"
+      unit="px"
+      [style]="'--width:' + layout.columns * 40 + '; --height: ' + layout.rows * 40 + ';'"
+      (drrDidChange)="setNewPosition($event)">
+      <mat-card style="padding: 0; pointer-events: auto;">
+        <mat-card-header style="display: block;">
+          <mat-card-title style="display: flex; align-items: center;">{{layout.name}}<button color="warn" mat-button (click)="removeLayout(i)" style="margin-left: auto;"><mat-icon>close</mat-icon></button></mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div *ngFor="let row of [].constructor(layout.rows); index as i" class="row">
+              <span style="width: 10px;">{{i+1}}</span>
+              <div *ngFor="let column of [].constructor(layout.columns); index as j" class="seat" [style]="'background-color: ' + layout.type.color"></div>
+            </div>
+        </mat-card-content>
+      </mat-card>
+      </deckgo-drr>
+  </div>
+
+</div>
