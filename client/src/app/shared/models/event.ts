@@ -25,5 +25,7 @@ export interface Event extends Model {
 
   isCanceled: boolean;
 
+  coverURL: string;
+
   seatTypes: SeatType[];
 }

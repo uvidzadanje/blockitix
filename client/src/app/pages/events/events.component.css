@@ -1,8 +1,7 @@
 .events {
   width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, calc(33.3% - 20px));
-  grid-template-rows: 1fr;
+  display: flex;
+  flex-direction: column;
   grid-gap: 20px;
   justify-content: center;
 }

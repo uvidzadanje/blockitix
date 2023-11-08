@@ -27,7 +27,7 @@ export class EventService {
 
   async createEvent(event: CreateEvent) : Promise<void>
   {
-    let {name, totalTickets, date, time, location, seatFormat, seatTypes} = event;
+    let {name, totalTickets, date, time, location, seatFormat, seatTypes, coverURL} = event;
     return (await this.blockitixContractService.execute(
       "createEvent",
       name,
@@ -36,6 +36,7 @@ export class EventService {
       date,
       time,
       location,
+      coverURL,
       seatTypes.map(seatType => ({...seatType, price: ethers.parseEther(`${seatType.price}`)}))
     ))!;
   }

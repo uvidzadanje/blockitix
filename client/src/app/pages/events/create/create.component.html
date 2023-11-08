@@ -31,6 +31,13 @@
               <mat-label>Location</mat-label>
               <input matInput type="text" formControlName="location">
             </mat-form-field>
+            <div class="input-group">
+              <button type="button" mat-raised-button (click)="fileInput.click()">Choose Cover Image</button>
+              <input hidden #fileInput type="file" accept="image/png, image/gif, image/jpeg" (change)="onFileChange($event)">
+            </div>
+            <div style="margin-top: 10px; margin-bottom: 10px;" *ngIf="coverImageSrc">
+              <img [src]="coverImageSrc" [alt]="coverImageSrc">
+            </div>
             <button mat-button color="primary" matStepperNext>Next</button>
           </form>
           <!-- <mat-card-actions>

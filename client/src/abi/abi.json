@@ -262,6 +262,11 @@
           "type": "string"
         },
         {
+          "internalType": "string",
+          "name": "_coverURL",
+          "type": "string"
+        },
+        {
           "components": [
             {
               "internalType": "string",
@@ -391,6 +396,11 @@
               "internalType": "bool",
               "name": "isCanceled",
               "type": "bool"
+            },
+            {
+              "internalType": "string",
+              "name": "coverURL",
+              "type": "string"
             }
           ],
           "internalType": "struct Blockitix.EventData[]",
@@ -481,6 +491,11 @@
               "internalType": "bool",
               "name": "isCanceled",
               "type": "bool"
+            },
+            {
+              "internalType": "string",
+              "name": "coverURL",
+              "type": "string"
             }
           ],
           "internalType": "struct Blockitix.EventData",

@@ -1,12 +1,17 @@
-<mat-card class="card">
-  <mat-card-header style="align-items: center; margin-bottom: 10px"><mat-card-title>{{event?.name}}</mat-card-title><button mat-raised-button color="primary" disabled style="margin-left: auto;" *ngIf="event?.isCanceled">CANCELED</button></mat-card-header>
-  <mat-card-content>
-    <p>{{event?.date | date:"dd.MM.YYYY."}} {{event?.time}}, {{event?.location}}</p>
-    <p>Remaining: {{event?.remainingTickets}}</p>
-  </mat-card-content>
-  <mat-card-actions *ngIf="!event?.isCanceled">
-    <button mat-button color="warn" *ngIf="isOwner && isCreator" (click)="cancelEvent()">Cancel</button>
-    <button mat-button color="primary" *ngIf="isOwner && isCreator">Edit</button>
-    <button mat-button color="accent" (click)="showTickets()" *ngIf="!isCreator">Buy ticket</button>
-</mat-card-actions>
+<mat-card style="display: flex; gap: 20px; align-items: center;">
+  <div style="flex: 1;">
+    <img [src]="event?.coverURL" [alt]="event?.coverURL" style="width: 100%;">
+  </div>
+  <div style="flex: 4; display: flex; flex-direction: column;">
+    <div style="align-items: center; margin-bottom: 10px;"><mat-card-title>{{event?.name}}</mat-card-title><button mat-raised-button color="primary" disabled style="margin-left: auto;" *ngIf="event?.isCanceled">CANCELED</button></div>
+    <mat-card-content style="flex: 1; margin-bottom: 0;">
+      <p>{{event?.date | date:"dd.MM.YYYY."}} {{event?.time}}  |  {{event?.location}}</p>
+      <div *ngIf="!event?.isCanceled" style="display: flex; margin-bottom: 0; align-items: center;">
+        <p style="margin-bottom: 0; color: gray;">Remaining: {{event?.remainingTickets}}</p>
+        <button mat-button color="warn" *ngIf="isOwner && isCreator" (click)="cancelEvent()" style="margin-left: auto;">Cancel</button>
+        <button mat-button color="primary" *ngIf="isOwner && isCreator">Edit</button>
+        <button mat-button color="accent" (click)="showTickets()" *ngIf="!isCreator" style="margin-left: auto;">Buy ticket</button>
+      </div>
+    </mat-card-content>
+  </div>
 </mat-card>
