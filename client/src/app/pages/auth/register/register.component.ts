@@ -13,7 +13,7 @@ export class RegisterComponent implements OnInit {
 
   form: FormGroup = new FormGroup({
     role: new FormControl(null, [Validators.required]),
-    fullname: new FormControl(null, [Validators.required, Validators.minLength(3), Validators.maxLength(40)])
+    username: new FormControl(null, [Validators.required, Validators.minLength(3), Validators.maxLength(40)])
   })
 
   roles: Array<{key: number, value: string}> = Object.keys(Role).filter(role => !isNaN(Number(role))).map(role => Number(role)).map(key => ({key: key, value: Role[key]}));
@@ -24,7 +24,7 @@ export class RegisterComponent implements OnInit {
   }
 
   async register() {
-    this.authService.register({role: this.form.value.role, fullname: this.form.value.fullname});
+    this.authService.register(this.form.value);
     this.router.navigate(['events']);
   }
 

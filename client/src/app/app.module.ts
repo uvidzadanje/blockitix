@@ -29,6 +29,11 @@ import { LoadingComponent } from './components/parts/loading/loading.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { SeatGeneratorComponent } from './pages/seat-generator/seat-generator.component';
+import { MatStepperModule } from "@angular/material/stepper";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { EthParserPipe } from './shared/pipes/eth-parser.pipe';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -42,7 +47,8 @@ import { SeatGeneratorComponent } from './pages/seat-generator/seat-generator.co
     TicketComponent,
     LoadingComponent,
     RegisterComponent,
-    SeatGeneratorComponent
+    SeatGeneratorComponent,
+    EthParserPipe
   ],
   imports: [
     BrowserModule,
@@ -61,7 +67,11 @@ import { SeatGeneratorComponent } from './pages/seat-generator/seat-generator.co
     MatSelectModule,
     MatInputModule,
     ReactiveFormsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatStepperModule,
+    MatTooltipModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [],
   bootstrap: [AppComponent],

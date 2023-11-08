@@ -4,9 +4,9 @@ export enum Role {
 }
 
 export interface User {
-  userAddress: string;
+  address: string;
   role: Role;
-  fullname: string
+  username: string
 }
 
-export interface CreateUser extends Omit<User, "userAddress"> { }
+export interface CreateUser extends Omit<User, "address"> { }

@@ -12,11 +12,20 @@ export abstract class Web3Service {
 
   async createEthereumContract(address: string, abi: any)
   {
-    const provider = new ethers.BrowserProvider((window as any).ethereum);
-    const signer = await provider.getSigner();
+    // const provider = new ethers.BrowserProvider((window as any).ethereum);
+    // const signer = await provider.getSigner();
+    const signer = await this.getSigner();
     const transactionsContract = new ethers.Contract(address, abi, signer);
 
     return transactionsContract;
+  }
+
+  async getSigner()
+  {
+    const provider = new ethers.BrowserProvider((window as any).ethereum);
+    const signer = await provider.getSigner();
+
+    return signer;
   }
 
   async execute<Type>(method: string, ...args: any[]) : Promise<Type | null>

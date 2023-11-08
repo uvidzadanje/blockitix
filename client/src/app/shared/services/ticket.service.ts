@@ -11,7 +11,7 @@ import { Web3Service } from './web3.service';
 export class TicketService {
   constructor(private blockitixContractService: BlockitixContractService) { }
 
-  async getTakenSeats(eventId: number): Promise<number[] | null>
+  async getTakenSeats(eventId: number): Promise<string[] | null>
   {
     return await this.blockitixContractService.execute("getTakenSeats", eventId);
   }
@@ -21,11 +21,11 @@ export class TicketService {
     return await this.blockitixContractService.execute<Ticket>("getTicketById", ticketId);
   }
 
-  async buyTicket(eventId: number, seat: number, price: number): Promise<void>
+  async buyTicket(eventId: number, seatId: string, price: number): Promise<void>
   {
     const contract = await this.blockitixContractService.Contract;
     // return await this.web3Service.executeWithOptions("buyTicket", {value: `${price}`}, [eventId, seat]);
-    await (contract as any).buyTicket(eventId, seat, {value: `${price}`});
+    await (contract as any).buyTicket(eventId, seatId, {value: `${ethers.parseEther(`${price}`)}`});
 
     // await (contract as any).widthdraw(eventId);
   }

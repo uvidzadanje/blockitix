@@ -2,6 +2,6 @@
   <button mat-button color="primary" (click)="showCreate()" *ngIf="isCreator"><span>+</span></button>
   <h2 *ngIf="!events.length">There are not events currently</h2>
   <div *ngIf="events.length" class="events">
-    <app-event *ngFor="let event of events" [event]="event" [isOwner]="event.owner === authInfo?.userAddress" [isCreator]="isCreator" class="card"></app-event>
+    <app-event *ngFor="let event of events" [event]="event" [isOwner]="event.owner === authInfo?.address" [isCreator]="isCreator" class="card"></app-event>
   </div>
 </div>

@@ -1,9 +1,11 @@
 <mat-card class="card">
-  <mat-card-header><mat-card-title>{{event?.name}}</mat-card-title></mat-card-header>
-  <mat-card-content><p>{{event?.date}} {{event?.time}}, {{event?.location}}</p></mat-card-content>
-  <mat-card-footer><p>Remaining: {{event?.remainingTickets}}</p></mat-card-footer>
-  <mat-card-actions>
-    <button mat-button color="warn" *ngIf="isOwner && isCreator">Delete</button>
+  <mat-card-header style="align-items: center; margin-bottom: 10px"><mat-card-title>{{event?.name}}</mat-card-title><button mat-raised-button color="primary" disabled style="margin-left: auto;" *ngIf="event?.isCanceled">CANCELED</button></mat-card-header>
+  <mat-card-content>
+    <p>{{event?.date | date:"dd.MM.YYYY."}} {{event?.time}}, {{event?.location}}</p>
+    <p>Remaining: {{event?.remainingTickets}}</p>
+  </mat-card-content>
+  <mat-card-actions *ngIf="!event?.isCanceled">
+    <button mat-button color="warn" *ngIf="isOwner && isCreator" (click)="cancelEvent()">Cancel</button>
     <button mat-button color="primary" *ngIf="isOwner && isCreator">Edit</button>
     <button mat-button color="accent" (click)="showTickets()" *ngIf="!isCreator">Buy ticket</button>
 </mat-card-actions>

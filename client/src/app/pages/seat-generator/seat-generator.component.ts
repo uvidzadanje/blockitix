@@ -6,11 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 
-export interface SeatType {
-  price: number;
-  name: string;
-  color: string;
-}
+import { SeatType } from 'src/app/shared/models/event';
 
 export interface SeatLayout {
   type: SeatType;
@@ -37,7 +33,7 @@ export class SeatGeneratorComponent implements OnInit {
   });
   typeForm: FormGroup = new FormGroup({
     name: new FormControl(null, [Validators.required]),
-    color: new FormControl(null, [Validators.required]),
+    colorMark: new FormControl(null, [Validators.required]),
     price: new FormControl(null, [Validators.required, Validators.min(0.01)]),
   });
   layouts: SeatLayout[] = [];
@@ -49,7 +45,7 @@ export class SeatGeneratorComponent implements OnInit {
       rows: 10,
       columns: 10,
       name: 'test',
-      type: { name: 'nesto', color: '#ff0000', price: 1 },
+      type: { name: 'nesto', colorMark: '#ff0000', price: 1 },
       width: 10 * 40,
       height: 10 * 40,
       top: 0,
@@ -71,7 +67,7 @@ export class SeatGeneratorComponent implements OnInit {
 
   addType(formTypeDirective: FormGroupDirective) {
     this.types.push({ ...this.typeForm.value });
-    formTypeDirective.resetForm({ color: '#000000' });
+    formTypeDirective.resetForm({ colorMark: '#000000' });
   }
 
   removeType(index: number) {

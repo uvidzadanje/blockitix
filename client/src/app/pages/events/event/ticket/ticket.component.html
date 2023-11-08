@@ -1,13 +1,40 @@
-<div mat-dialog-content>
-  <h2 mat-dialog-title>Chose a seat</h2>
-  <div mat-dialog-content class="container">
-    <button
-    mat-button
-    *ngFor="let seat of allSeats"
-    [ngClass]="seat.isTaken ? 'taken-seat' : 'untaken-seat'"
-    [disabled]="seat.isTaken"
-    [color]="seat.isTaken ? 'warn' : 'primary'"
-    (click)="buyTicket(seat.seat)"
-    >{{seat.seat}}</button>
-  </div>
+<div id="wrapp" style="height: 600px; width: 1000px;">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Chose a category</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field>
+        <mat-label>Chose category</mat-label>
+        <mat-select matInput [(value)]="selectedType">
+          <mat-option [value]="">Category</mat-option>
+          <mat-option *ngFor="let seatType of seatsType" [value]="seatType.name">{{seatType.name}} ({{seatType.price | ethParser}} ETH)</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-card-content>
+  </mat-card>
+  <mat-card style="width: 100%; height: 100%;">
+    <mat-card-header>
+      <mat-card-title>Chose a seat</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="container" style="position: relative;">
+      <mat-card style="padding: 0; position:absolute" *ngFor="let layout of layouts" [style]="'width:' + layout.width + 'px; height:' + layout.height + 'px;top:' +  layout.top + 'px;' + 'left:' + layout.left + 'px'">
+        <mat-card-header style="display: block;">
+          <mat-card-title style="display: flex; align-items: center;">{{layout.name}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div *ngFor="let row of [].constructor(layout.rows); index as i" class="row">
+              <span style="width: 10px;">{{i+1}}</span>
+              <button
+              *ngFor="let column of [].constructor(layout.columns); index as j" class="seat"
+              [style]="'background-color: ' + (!isSelected(layout.type.name) || isTaken(layout.name, i, j) ? 'lightgray' : layout.type.colorMark)"
+              (click)="buyTicket(layout, i, j)"
+              [matTooltip]="'Buy ticket at ' + layout.name + '\nRow: ' + (i + 1) + '\nColumn: ' + (j + 1)"
+              [disabled]="!isSelected(layout.type.name) || isTaken(layout.name, i, j)"
+              ></button>
+            </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-card-content>
+  </mat-card>
 </div>
