@@ -69,7 +69,7 @@ export class AuthController {
     async getAuthInfo(req: Request, res: Response, next: NextFunction)
     {
         try {
-            const user = await userService.get(req.body.address);
+            const user = await userService.get(req.params.address);
 
             if(!user)
                 throw new ApplicationError(httpErrorTypes.UNAUTHORIZED);
