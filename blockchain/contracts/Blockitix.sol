@@ -8,17 +8,17 @@ import "hardhat/console.sol";
 
 contract Blockitix is Ownable, ERC721 {
     bool private stopped = false;
-    
+
     struct EventData {
         uint256 id;
 
         string name;
 
-        uint price;
-
         uint totalTickets;
 
         uint remainingTickets;
+
+        string seatsFormat;
 
         address owner;
 
@@ -27,20 +27,38 @@ contract Blockitix is Ownable, ERC721 {
         string time;
 
         string location;
+
+        bool isCanceled;
+
+        string coverURL;
     }
 
-    mapping(uint256 => uint[]) seatsTaken;
+    mapping(uint256 => SeatType[]) eventSeatTypes;
 
-    mapping(uint256 => mapping(uint => uint256)) seatTicket;
+    // mapping(uint256 => uint[]) seatsTaken;
+
+    // seatIdFormat: layoutName;row;column
+
+    // eventId => seatIdFormat 
+    mapping(uint256 => string[]) seatsTaken;
+
+    // eventId => seatIdFormat => ticketId
+    mapping(uint256 => mapping (string => uint256)) seatTicket;
 
     struct TicketData {
         uint256 id;
 
         uint256 eventId;
 
-        bool redeemed;
-
         address owner;
+    }
+
+    struct SeatType {
+        string name;
+
+        string colorMark;
+
+        uint price;
     }
     
     uint256 totalEvents;
@@ -54,7 +72,7 @@ contract Blockitix is Ownable, ERC721 {
 
     event EventCreated(uint indexed eventId, address indexed creator);
 
-    event BoughtTicket(uint indexed ticketId, uint indexed seat, address indexed buyer);
+    event BoughtTicket(uint indexed ticketId, address indexed buyer);
 
     event RedeemedTicket(uint indexed ticketId);
 
@@ -72,43 +90,50 @@ contract Blockitix is Ownable, ERC721 {
     }
 
     function createEvent(
-        string memory _name, 
-        uint _price, 
+        string memory _name,
         uint _totalTickets,
+        string memory _seatFormat,
         string memory _date,
         string memory _time,
-        string memory _location
+        string memory _location,
+        string memory _coverURL,
+        SeatType[] memory _seatTypes
         ) external stopInEmergency returns (uint) {
+            
         totalEvents++;
-        events[totalEvents] = EventData(totalEvents, _name, _price, _totalTickets, _totalTickets, msg.sender, _date, _time, _location);
+        events[totalEvents] = EventData(totalEvents, _name, _totalTickets, _totalTickets, _seatFormat, msg.sender, _date, _time, _location, false, _coverURL);
         eventIds.push(totalEvents);
+
+        uint256 seatTypesLength = _seatTypes.length;
+        for (uint i = 0; i < seatTypesLength; i++) {
+            eventSeatTypes[totalEvents].push(_seatTypes[i]);
+        }
+
         emit EventCreated(totalEvents, msg.sender);
         return totalEvents;
     }
 
-    function deleteEvent(uint256 eventId) external
+    function cancelEvent(uint256 eventId) external
     {
-        delete events[eventId];
+        events[eventId].isCanceled = true;
     }
 
-    receive() external payable {}
-
-    function buyTicket(uint256 eventId, uint seatNumber) external stopInEmergency payable {
+    function buyTicket(uint256 eventId, string memory seatId) external stopInEmergency payable {
         require(events[eventId].owner != address(0), "Event does not exist");
 
         require(events[eventId].remainingTickets > 0, "There are no remaining tickets");
         
-        require(msg.value == events[eventId].price, "Payment did not match event ticket price");
+        // require(msg.value == events[eventId].price, "Payment did not match event ticket price");
         
-        require(seatTicket[eventId][seatNumber] == 0, "Seat has been taken");
+        require(seatTicket[eventId][seatId] == 0, "Seat has been taken");
         
         totalTickets++;
 
-        tickets[totalTickets] = TicketData(totalTickets, eventId, false, msg.sender);
+        tickets[totalTickets] = TicketData(totalTickets, eventId, msg.sender);
 
-        seatsTaken[eventId].push(seatNumber);
+        seatsTaken[eventId].push(seatId);
 
-        seatTicket[eventId][seatNumber] = totalTickets;
+        seatTicket[eventId][seatId] = totalTickets;
         
         events[eventId].remainingTickets--;
 
@@ -120,7 +145,7 @@ contract Blockitix is Ownable, ERC721 {
 
         ticketIds.push(totalTickets);
 
-        emit BoughtTicket(totalTickets, seatNumber, msg.sender);
+        emit BoughtTicket(totalTickets, msg.sender);
     }
 
     function getAllEvents() external view returns (EventData[] memory)
@@ -130,9 +155,18 @@ contract Blockitix is Ownable, ERC721 {
         for(uint i = 0; i < eventIds.length; i++)
         {
             ret[i] = events[eventIds[i]];
+            ret[i].seatsFormat = "";
         }
 
         return ret;
+    }
+
+    function getSeatLayout(uint256 eventId) external view returns (string memory seatsFormat, SeatType[] memory seatsType)
+    {
+        string memory seatFormat = events[eventId].seatsFormat;
+        SeatType[] memory seatTypes = eventSeatTypes[eventId];
+
+        return (seatFormat, seatTypes);
     }
 
     function getOneEvent(uint256 eventId) external view returns (EventData memory)
@@ -140,9 +174,9 @@ contract Blockitix is Ownable, ERC721 {
         return events[eventId];
     }
 
-    function getTIcketBySeat(uint256 eventId, uint seatNumber) external view returns (TicketData memory)
+    function getTicketBySeat(uint256 eventId, string memory seatId) external view returns (TicketData memory)
     {
-        return tickets[seatTicket[eventId][seatNumber]];
+        return tickets[seatTicket[eventId][seatId]];
     }
 
     function getTicketById(uint256 ticketId) external view returns (TicketData memory)
@@ -172,7 +206,7 @@ contract Blockitix is Ownable, ERC721 {
     //     emit RedeemedTicket(ticketId);
     // }
 
-    function getTakenSeats(uint256 eventId) external view returns(uint[] memory)
+    function getTakenSeats(uint256 eventId) external view returns(string[] memory)
     {
         return seatsTaken[eventId];
     }
