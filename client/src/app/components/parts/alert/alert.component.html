@@ -1,9 +1,10 @@
 <div mat-dialog-content>
-  <h1 mat-dialog-title>Error</h1>
+  <h1 mat-dialog-title *ngIf="type === 'error'">Error</h1>
+  <h1 mat-dialog-title *ngIf="type === 'success'">Success</h1>
   <div mat-dialog-content>
     <p>{{message}}</p>
   </div>
   <div mat-dialog-actions>
-    <button mat-button color="warn" (click)="close()">Ok</button>
+    <button mat-button [color]="type === 'success' ? 'primary' : 'warn'" (click)="close()">Ok</button>
   </div>
 </div>

@@ -1,0 +1,42 @@
+.hero {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero > img {
+  width: 100%;
+}
+
+.hero-text {
+  position: absolute;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+}
+
+.hero-text h1 {
+  font-weight: bold;
+  font-size: 50px;
+  text-align: center;
+}
+
+.hero-text p {
+  margin: 0;
+  font-size: 16px;
+}
+
+#wrapp h1 {
+  text-align: left;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+#wrapp p {
+  font-size: 16px;
+}
+
+

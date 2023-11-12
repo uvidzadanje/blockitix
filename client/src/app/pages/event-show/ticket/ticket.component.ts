@@ -1,11 +1,15 @@
-import { Component, Inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SeatLayout } from 'src/app/pages/seat-generator/seat-generator.component';
-import { SeatType } from 'src/app/shared/models/event';
+import { Event, SeatType } from 'src/app/shared/models/event';
 import { BlockitixContractService } from 'src/app/shared/services/blockitix-contract.service';
 import { EventService } from 'src/app/shared/services/event.service';
 import { LoadingService } from 'src/app/shared/services/loading.service';
 import { TicketService } from 'src/app/shared/services/ticket.service';
+import QRCode from 'qrcode';
+import { environment } from 'src/environments/environment';
+import { UploadService } from 'src/app/shared/services/upload.service';
+import { AlertService } from 'src/app/components/parts/alert/alert.service';
 
 interface Data {
   eventId: number;
@@ -24,26 +28,26 @@ interface Seat {
   styleUrls: ['./ticket.component.css'],
 })
 export class TicketComponent implements OnInit {
-  eventId: number;
-  // price: number;
-  // totalTickets: number;
-  // allSeats: Seat[] = [];
+  @Input() event?: Event;
+  @Input() isCreator?: boolean;
   seatsTaken: {[name: string] : {[row: number]: number[]}} = {};
 
   layouts: SeatLayout[] = [];
   seatsType: SeatType[] = [];
 
-  selectedType: string = "";
+  selectedTypes: string[] = [];
 
   constructor(
-    private dialogRef: MatDialogRef<TicketComponent>,
-    @Inject(MAT_DIALOG_DATA) data: Data,
+    // private dialogRef: MatDialogRef<TicketComponent>,
+    // @Inject(MAT_DIALOG_DATA) data: Data,
     private ticketService: TicketService,
     private blockitixContractService: BlockitixContractService,
     private loadingService: LoadingService,
-    private eventService: EventService
+    private eventService: EventService,
+    private uploadService: UploadService,
+    private alertService: AlertService
   ) {
-    this.eventId = data.eventId;
+    // this.eventId = data.eventId;
   }
 
   async ngOnInit(): Promise<void> {
@@ -69,11 +73,11 @@ export class TicketComponent implements OnInit {
     //       (seatTaken) => Number(seatTaken) === i + 1
     //     ),
     //   }));
-    let data = await this.eventService.getSeatLayout(this.eventId);
+    let data = await this.eventService.getSeatLayout(this.event?.id!);
     this.layouts = JSON.parse(data.seatsFormat);
     this.seatsType = data.seatsType;
 
-    let seatsTakenFormats = await this.ticketService.getTakenSeats(this.eventId);
+    let seatsTakenFormats = await this.ticketService.getTakenSeats(this.event?.id!);
 
     seatsTakenFormats?.forEach(takenSeat => {
       let [name, row, column] = takenSeat.split(";");
@@ -99,7 +103,7 @@ export class TicketComponent implements OnInit {
 
   isSelected(seatType: string)
   {
-    return !this.selectedType || this.selectedType === seatType;
+    return !this.selectedTypes.length || this.selectedTypes.some(type => type === seatType);
   }
 
   addTakenSeat(layoutName: string, row: number, column: number)
@@ -120,8 +124,38 @@ export class TicketComponent implements OnInit {
   }
 
   async buyTicket(layout: SeatLayout, row: number, column: number) {
-    // this.loadingService.enableLoading();
-    await this.ticketService.buyTicket(this.eventId, `${layout.name};${row};${column}`, layout.type.price);
+    this.loadingService.enableLoading();
+    let eventDate = new Date(this.event?.datetime!);
+
+    let jsonFile = {
+      name: `Ticket ${this.event?.name}`,
+      description: `${layout.name}, row: ${row+1}, column: ${column+1}`,
+      image: this.event?.coverURL,
+      attributes: [
+        {
+          trait_type: "Seat",
+          value: layout.name
+        },
+        {
+          trait_type: "Row",
+          value: row + 1
+        },
+        {
+          trait_type: "Column",
+          value: column + 1
+        }
+      ]
+    }
+
+    let jsonFileURL = `${environment.ipfsStorageURL}/${await this.uploadService.upload(JSON.stringify(jsonFile))}`;
+
+    this.blockitixContractService.onEvent("BoughtTicket", (ticketId) => {
+      this.loadingService.disableLoading();
+      this.alertService.alert$.next({type: "success", message: `Successful purchase! You can now import NFT with ticket ID: ${ticketId}`})
+    });
+
+    await this.ticketService.buyTicket(this.event?.id!, `${layout.name};${row};${column}`, jsonFileURL, layout.type.price);
+
     this.addTakenSeat(layout.name, row, column);
   }
 }

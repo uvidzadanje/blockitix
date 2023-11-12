@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Web3Service } from './web3.service';
 
-import { Event, SeatType } from '../models/event';
+import { EditEvent, Event, SeatType } from '../models/event';
 import { CreateEvent } from '../dto/createEvent.dto';
 import { ethers } from 'ethers';
 import { Subject } from 'rxjs';
@@ -27,16 +27,18 @@ export class EventService {
 
   async createEvent(event: CreateEvent) : Promise<void>
   {
-    let {name, totalTickets, date, time, location, seatFormat, seatTypes, coverURL} = event;
+    let {name, totalTickets, datetime, city, location, seatFormat, seatTypes, coverURL, descriptionURL, category} = event;
     return (await this.blockitixContractService.execute(
       "createEvent",
       name,
       totalTickets,
       seatFormat,
-      date,
-      time,
+      datetime,
+      city,
       location,
       coverURL,
+      descriptionURL,
+      category,
       seatTypes.map(seatType => ({...seatType, price: ethers.parseEther(`${seatType.price}`)}))
     ))!;
   }
@@ -50,4 +52,20 @@ export class EventService {
   {
     await this.blockitixContractService.execute("cancelEvent", eventId);
   }
+
+  async editEvent(event: EditEvent)
+  {
+    await this.blockitixContractService.execute(
+      "editEvent",
+      event.id,
+      event.name,
+      event.datetime,
+      event.city,
+      event.location,
+      event.coverURL,
+      event.descriptionURL,
+      event.category
+    )
+  }
+
 }

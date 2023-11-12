@@ -15,9 +15,9 @@ export interface Event extends Model {
 
   owner: string;
 
-  date: string;
+  datetime: string;
 
-  time: string;
+  city: string;
 
   location: string;
 
@@ -27,5 +27,13 @@ export interface Event extends Model {
 
   coverURL: string;
 
+  descriptionURL: string;
+
+  category: string;
+
   seatTypes: SeatType[];
 }
+
+type EditEventFields = "id" | "name" | "datetime" | "location" | "coverURL" | "descriptionURL"| "city" | "category"
+
+export interface EditEvent extends Pick<Event, EditEventFields> { }

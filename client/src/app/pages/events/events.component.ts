@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Role, User } from 'src/app/shared/models/user';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { BlockitixContractService } from 'src/app/shared/services/blockitix-contract.service';
 import { EventService } from 'src/app/shared/services/event.service';
+import { StaticDataService } from 'src/app/shared/services/static-data.service';
 import { Event } from "../../shared/models/event";
-import { CreateComponent } from './create/create.component';
+import QRCode from "qrcode";
+import { UploadService } from 'src/app/shared/services/upload.service';
+import { Stream } from 'stream';
+import { WriteStream } from 'fs';
 
 @Component({
   selector: 'app-events',
@@ -21,23 +26,29 @@ export class EventsComponent implements OnInit {
   events: Event[] = [];
   authInfo: User | null = null;
   isCreator: boolean = false;
+  cities?: string[];
+  eventCategories?: string[];
 
-  constructor(private eventService: EventService, private router: Router, private blockitixContractService: BlockitixContractService, private authService: AuthService) { }
+  filterForm: FormGroup = new FormGroup({
+    dateStart: new FormControl(new Date().toISOString().split("T")[0]),
+    dateEnd: new FormControl(new Date().toISOString().split("T")[0]),
+    city: new FormControl(""),
+    eventCategory: new FormControl("")
+  })
+
+  constructor(private eventService: EventService, private router: Router, private blockitixContractService: BlockitixContractService, private authService: AuthService, private staticDataService: StaticDataService, private uploadService: UploadService) { }
 
   async ngOnInit(): Promise<void> {
-    this.authInfo = await this.authService.getUser();
+    this.cities = (await this.staticDataService.getCities())?.map(city => city.name);
+    this.eventCategories = (await this.staticDataService.getEventCategories())?.map(eventCategory => eventCategory.name);
+    this.authInfo = await this.authService.getAuthUser();
     this.isCreator = Number(this.authInfo?.role) === Role.CREATOR;
-    this.eventService.event$.subscribe((event) => {
-      this.events = [...this.events, event];
-    });
-
-    await this.blockitixContractService.onEvent("EventCreated", async (tx: bigint) => {
-      let a = (await this.eventService.getOneEvent(tx))!;
-      this.eventService.event$.next(a);
-    });
 
     this.events = (await this.eventService.getAllEvents()) ?? [];
+  }
 
-    console.log(this.events);
+  async filter()
+  {
+    this.events = ((await this.eventService.getAllEvents())!).filter(event => (!this.filterForm.value.city || event.city === this.filterForm.value.city) && (!this.filterForm.value.eventCategory || this.filterForm.value.eventCategory === event.category) && new Date(event.datetime) >= new Date(this.filterForm.value.dateStart) && new Date(event.datetime) <= new Date(this.filterForm.value.dateEnd));
   }
 }

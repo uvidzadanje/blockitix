@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { Event } from 'src/app/shared/models/event';
 import { EventService } from 'src/app/shared/services/event.service';
-import { TicketComponent } from './ticket/ticket.component';
+import { TicketComponent } from '../../event-show/ticket/ticket.component';
 
 @Component({
   selector: 'app-event',
@@ -14,7 +15,7 @@ export class EventComponent implements OnInit {
   @Input() isOwner?: boolean;
   @Input() isCreator?: boolean;
 
-  constructor(private dialog: MatDialog, private eventService: EventService) { }
+  constructor(private dialog: MatDialog, private eventService: EventService, private router: Router) { }
 
   ngOnInit(): void {
 
@@ -33,6 +34,10 @@ export class EventComponent implements OnInit {
 
   async cancelEvent() {
     await this.eventService.cancelEvent(this.event?.id!);
+  }
+
+  goEdit() {
+    this.router.navigate([`event/edit/${this.event?.id}`]);
   }
 
 }

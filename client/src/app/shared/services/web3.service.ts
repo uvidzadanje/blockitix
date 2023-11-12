@@ -37,7 +37,7 @@ export abstract class Web3Service {
 
       return data as Type;
     } catch (error: any) {
-      this.alertService.alert$.next(error.message);
+      this.alertService.alert$.next({type: "error", message: error.message});
       return null;
     }
   }
@@ -53,7 +53,7 @@ export abstract class Web3Service {
 
       return data as Type;
     } catch (error: any) {
-      this.alertService.alert$.next(error.message);
+      this.alertService.alert$.next({type: "error", message: error.message});
       return null;
     }
   }
@@ -65,7 +65,7 @@ export abstract class Web3Service {
 
       await contract.on(event, onEventFunction);
     } catch (error: any) {
-      this.alertService.alert$.next(error.message);
+      this.alertService.alert$.next({type: "error", message: error.message});
     }
   }
 }

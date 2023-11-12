@@ -1,0 +1,21 @@
+<div id="wrapp" style="flex: 1;">
+  <mat-card *ngIf="ticket?.id">
+    <div style="width: 100%;">
+      <mat-card-title style="display: flex; align-items: center; width: 100%;">Ticket informations - {{event?.name}} <span style="display: flex; align-items: center; color: lightgreen; margin-left: auto;">Valid ticket<mat-icon style="color: lightgreen;">check_circle</mat-icon></span></mat-card-title>
+    </div>
+    <img mat-card-image [src]="event?.coverURL" [alt]="event?.coverURL">
+    <mat-card-content>
+      <div style="display: flex; width: 100%; justify-content: space-between; font-weight: 500;">
+        <p class="info">{{event?.datetime | date:"dd.MM.YYYY. HH:mm"}} | {{event?.location}}</p>
+        <p class="info">{{layout}}, row {{row}}, column {{column}}</p>
+      </div>
+      <div style="margin-top: 30px; font-weight: 300;">
+        <h1 style="font-weight: bold;">Owner info</h1>
+        <p class="info">Username: {{user?.username}}</p>
+        <p class="info">Address: {{user?.address}}</p>
+      </div>
+      <!-- <qrcode [qrdata]="ticket?.id?.toString()!" [width]="256" [errorCorrectionLevel]="'M'" elementType="img"></qrcode> -->
+    </mat-card-content>
+  </mat-card>
+  <h1 *ngIf="!ticket?.id" style="color: red;">Ticket is not valid <span style="color: red;"><mat-icon>report</mat-icon></span></h1>
+</div>

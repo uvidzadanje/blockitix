@@ -24,7 +24,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from "@angular/material/select";
 import { ReactiveFormsModule } from '@angular/forms';
-import { TicketComponent } from './pages/events/event/ticket/ticket.component';
+import { TicketComponent } from './pages/event-show/ticket/ticket.component';
 import { LoadingComponent } from './components/parts/loading/loading.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RegisterComponent } from './pages/auth/register/register.component';
@@ -34,6 +34,16 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { EthParserPipe } from './shared/pipes/eth-parser.pipe';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { EditEventComponent } from './pages/events/edit-event/edit-event.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { QRCodeModule } from 'angularx-qrcode';
+import { TicketValidationComponent } from './pages/ticket/ticket-validation/ticket-validation.component';
+import { EventShowComponent } from './pages/event-show/event-show.component';
+import { AngularEditorModule } from '@kolkov/angular-editor';
+import { HttpClientModule } from '@angular/common/http';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { HomeComponent } from './pages/home/home.component'
 
 @NgModule({
   declarations: [
@@ -48,7 +58,12 @@ import { MatNativeDateModule } from '@angular/material/core';
     LoadingComponent,
     RegisterComponent,
     SeatGeneratorComponent,
-    EthParserPipe
+    EthParserPipe,
+    EditEventComponent,
+    NotFoundComponent,
+    TicketValidationComponent,
+    EventShowComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -71,7 +86,12 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatStepperModule,
     MatTooltipModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    QRCodeModule,
+    AngularEditorModule,
+    HttpClientModule,
+    MatTabsModule,
+    MatAutocompleteModule
   ],
   providers: [],
   bootstrap: [AppComponent],

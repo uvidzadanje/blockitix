@@ -1,5 +1,39 @@
-<div id="wrapp">
-  <button mat-button color="primary" (click)="showCreate()" *ngIf="isCreator"><span>+</span></button>
+<div id="wrapp" style="gap:20px; flex: 1; justify-content: start;">
+  <mat-card>
+    <mat-card-header style="justify-content: center; margin-bottom: 10px;">
+      <mat-card-title>Filters</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-card-content>
+        <form [formGroup]="filterForm" style="display: flex; gap: 10px; align-items: center;" (submit)="filter()">
+          <mat-form-field>
+            <mat-label>Start Date</mat-label>
+            <input type="date" matInput formControlName="dateStart">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>End Date</mat-label>
+            <input type="date" matInput formControlName="dateEnd">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>City</mat-label>
+            <mat-select formControlName="city" matInput>
+              <mat-option value="">Select city</mat-option>
+              <mat-option [value]="city" *ngFor="let city of cities">{{city}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Event Category</mat-label>
+            <mat-select formControlName="eventCategory" matInput>
+              <mat-option value="">Select category</mat-option>
+              <mat-option [value]="category" *ngFor="let category of eventCategories">{{category}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button type="submit" mat-raised-button color="primary">Search</button>
+        </form>
+      </mat-card-content>
+    </mat-card-content>
+  </mat-card>
+  <button mat-raised-button color="primary" (click)="showCreate()" *ngIf="isCreator"><span>+</span></button>
   <h2 *ngIf="!events.length">There are not events currently</h2>
   <div *ngIf="events.length" class="events">
     <app-event *ngFor="let event of events" [event]="event" [isOwner]="event.owner === authInfo?.address" [isCreator]="isCreator" class="card"></app-event>

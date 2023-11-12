@@ -5,6 +5,6 @@ import { Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class AlertService {
-  alert$: Subject<string> = new Subject<string>();
+  alert$: Subject<{type: "error" | "success", message: string}> = new Subject<{type: "error" | "success", message: string}>();
   constructor() { }
 }

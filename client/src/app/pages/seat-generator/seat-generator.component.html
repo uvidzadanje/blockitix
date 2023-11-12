@@ -13,7 +13,7 @@
         <mat-card-content>
             <div *ngFor="let row of [].constructor(layout.rows); index as i" class="row">
               <span style="width: 10px;">{{i+1}}</span>
-              <div *ngFor="let column of [].constructor(layout.columns); index as j" class="seat" [style]="'background-color: ' + layout.type.colorMark"></div>
+              <mat-icon *ngFor="let column of [].constructor(layout.columns); index as j" [style]="'color: ' + layout.type.colorMark">event_seat</mat-icon>
             </div>
         </mat-card-content>
       </mat-card>

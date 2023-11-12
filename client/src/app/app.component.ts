@@ -15,7 +15,7 @@ import { LoadingService } from './shared/services/loading.service';
 export class AppComponent implements OnInit {
   title = 'client';
 
-  alert$: Subject<string>;
+  alert$: Subject<{type: "error" | "success", message: string}>;
   isLoading: boolean = false;
 
   constructor(alertService: AlertService, private web3Service: Web3Service, private dialog: MatDialog, private loadingService: LoadingService)
@@ -25,9 +25,11 @@ export class AppComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.alert$.subscribe((data) => {
+      this.loadingService.disableLoading();
       this.dialog.open(AlertComponent, {
         data: {
-          message: data
+          type: data.type,
+          message: data.message
         }
       });
     });

@@ -41,16 +41,7 @@ export class SeatGeneratorComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.layouts.push({
-      rows: 10,
-      columns: 10,
-      name: 'test',
-      type: { name: 'nesto', colorMark: '#ff0000', price: 1 },
-      width: 10 * 40,
-      height: 10 * 40,
-      top: 0,
-      left: 0,
-    });
+
   }
 
   addLayout(formLayoutDirective: FormGroupDirective) {

@@ -1,0 +1,17 @@
+.hero {
+  display: flex;
+  justify-content: end;
+  padding: 20px;
+  background-color: #003df5;
+  gap: 20px;
+}
+
+.hero-title {
+  color: white;
+  font-size: 50px;
+  font-weight: bold;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

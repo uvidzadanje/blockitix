@@ -5,7 +5,7 @@ export interface Ticket extends Model {
 
   eventId: number;
 
-  redeemed: boolean;
-
   owner: string;
+
+  seatFormat: string;
 }

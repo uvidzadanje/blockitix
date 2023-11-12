@@ -30,15 +30,15 @@
 .seat {
   width: 10px;
   height: 10px;
-  border-radius: 5%;
+  /* border-radius: 5%; */
   padding: 0;
-  border-width: 2px;
-  border-style: solid;
+  /* border-width: 2px;
+  border-style: solid; */
 }
 
 .seat {
   background-color: transparent;
-  border-color: gray;
+  /* border-color: gray; */
 }
 
 .row {
