@@ -1,3 +1,4 @@
+import { mine } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { ethers } from "hardhat";
 
 async function main() {
@@ -12,6 +13,8 @@ async function main() {
   const blockitixContract = await Blockitix.deploy(NAME, SYMBOL);
 
   await blockitixContract.waitForDeployment();
+
+  await mine(15); // to solving bug with event emit
 
   console.log(`Deployed Blockitix Contract at: ${await blockitixContract.getAddress()}\n`);
 }

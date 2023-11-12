@@ -3,10 +3,12 @@ pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 
 import "hardhat/console.sol";
 
-contract Blockitix is Ownable, ERC721 {
+contract Blockitix is Ownable, ERC721, ERC721URIStorage, ERC721Burnable {
     bool private stopped = false;
 
     struct EventData {
@@ -22,15 +24,19 @@ contract Blockitix is Ownable, ERC721 {
 
         address owner;
 
-        string date;
+        string datetime;
 
-        string time;
+        string city;
 
         string location;
 
         bool isCanceled;
 
         string coverURL;
+
+        string descriptionURL;
+
+        string category;
     }
 
     mapping(uint256 => SeatType[]) eventSeatTypes;
@@ -51,6 +57,8 @@ contract Blockitix is Ownable, ERC721 {
         uint256 eventId;
 
         address owner;
+
+        string seatFormat;
     }
 
     struct SeatType {
@@ -72,9 +80,11 @@ contract Blockitix is Ownable, ERC721 {
 
     event EventCreated(uint indexed eventId, address indexed creator);
 
-    event BoughtTicket(uint indexed ticketId, address indexed buyer);
+    event BoughtTicket(uint ticketId, address buyer);
 
     event RedeemedTicket(uint indexed ticketId);
+
+    event EventUpdated(uint indexed eventId);
 
     modifier stopInEmergency() {
         require(!stopped, "Contract is in emergency stop");
@@ -93,15 +103,17 @@ contract Blockitix is Ownable, ERC721 {
         string memory _name,
         uint _totalTickets,
         string memory _seatFormat,
-        string memory _date,
-        string memory _time,
+        string memory _datetime,
+        string memory _city,
         string memory _location,
         string memory _coverURL,
+        string memory _descriptionURL,
+        string memory _category,
         SeatType[] memory _seatTypes
         ) external stopInEmergency returns (uint) {
             
         totalEvents++;
-        events[totalEvents] = EventData(totalEvents, _name, _totalTickets, _totalTickets, _seatFormat, msg.sender, _date, _time, _location, false, _coverURL);
+        events[totalEvents] = EventData(totalEvents, _name, _totalTickets, _totalTickets, _seatFormat, msg.sender, _datetime, _city, _location, false, _coverURL, _descriptionURL, _category);
         eventIds.push(totalEvents);
 
         uint256 seatTypesLength = _seatTypes.length;
@@ -118,7 +130,7 @@ contract Blockitix is Ownable, ERC721 {
         events[eventId].isCanceled = true;
     }
 
-    function buyTicket(uint256 eventId, string memory seatId) external stopInEmergency payable {
+    function buyTicket(uint256 eventId, string memory seatId, string memory _tokenURI) external stopInEmergency payable {
         require(events[eventId].owner != address(0), "Event does not exist");
 
         require(events[eventId].remainingTickets > 0, "There are no remaining tickets");
@@ -129,7 +141,7 @@ contract Blockitix is Ownable, ERC721 {
         
         totalTickets++;
 
-        tickets[totalTickets] = TicketData(totalTickets, eventId, msg.sender);
+        tickets[totalTickets] = TicketData(totalTickets, eventId, msg.sender, seatId);
 
         seatsTaken[eventId].push(seatId);
 
@@ -138,6 +150,7 @@ contract Blockitix is Ownable, ERC721 {
         events[eventId].remainingTickets--;
 
         _safeMint(msg.sender, totalTickets);
+        _setTokenURI(totalTickets, _tokenURI);
 
         (bool success, ) = payable(events[eventId].owner).call{value: msg.value}("");
 
@@ -169,6 +182,15 @@ contract Blockitix is Ownable, ERC721 {
         return (seatFormat, seatTypes);
     }
 
+    function getOneEventShort(uint256 eventId) external view returns (EventData memory)
+    {
+        EventData memory eventMem = events[eventId];
+
+        eventMem.seatsFormat = "";
+
+        return eventMem;
+    }
+
     function getOneEvent(uint256 eventId) external view returns (EventData memory)
     {
         return events[eventId];
@@ -184,15 +206,28 @@ contract Blockitix is Ownable, ERC721 {
         return tickets[ticketId];
     }
 
-    function editEventDate(uint256 eventId, string memory date, string memory time) external
+    function editEvent(
+        uint256 eventId,
+        string memory _name,
+        string memory _datetime,
+        string memory _city,
+        string memory _location,
+        string memory _coverURL,
+        string memory _descriptionURL,
+        string memory _category
+    ) external returns (EventData memory)
     {
-        events[eventId].date = date;
-        events[eventId].time = time;
-    }
+        events[eventId].name = _name;
+        events[eventId].datetime = _datetime;
+        events[eventId].city = _city;
+        events[eventId].location = _location;
+        events[eventId].coverURL = _coverURL;
+        events[eventId].descriptionURL = _descriptionURL;
+        events[eventId].category = _category;
 
-    function editEventLocation(uint256 eventId, string memory location) external
-    {
-        events[eventId].location = location;
+        emit EventUpdated(eventId);
+
+        return events[eventId];
     }
 
     // function redeemTicket(uint ticketId, uint eventId) external stopInEmergency {
@@ -213,5 +248,27 @@ contract Blockitix is Ownable, ERC721 {
 
     function isValid(uint eventId, uint ticketId) external view returns (bool) {
         return tickets[ticketId].id > 0 && tickets[ticketId].eventId == eventId;
+    }
+
+    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+        super._burn(tokenId);
+    }
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
+        return super.tokenURI(tokenId);
+    }
+
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
     }
 }
