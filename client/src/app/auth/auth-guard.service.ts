@@ -25,7 +25,7 @@ export class AuthGuardService implements CanActivate {
     {
       if(!roles.some(role => role === user?.role))
       {
-        this.router.navigate(['register']);
+        this.router.navigate(['events']);
         return false;
       }
     }

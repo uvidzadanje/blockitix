@@ -9,7 +9,7 @@ import { EventService } from 'src/app/shared/services/event.service';
 import { StaticDataService } from 'src/app/shared/services/static-data.service';
 import { Event } from "../../shared/models/event";
 import QRCode from "qrcode";
-import { UploadService } from 'src/app/shared/services/upload.service';
+import { IPFSService } from 'src/app/shared/services/ipfs.service';
 import { Stream } from 'stream';
 import { WriteStream } from 'fs';
 
@@ -31,12 +31,12 @@ export class EventsComponent implements OnInit {
 
   filterForm: FormGroup = new FormGroup({
     dateStart: new FormControl(new Date().toISOString().split("T")[0]),
-    dateEnd: new FormControl(new Date().toISOString().split("T")[0]),
+    dateEnd: new FormControl(new Date((new Date().setDate(new Date().getDate() + 7))).toISOString().split("T")[0]),
     city: new FormControl(""),
     eventCategory: new FormControl("")
   })
 
-  constructor(private eventService: EventService, private router: Router, private blockitixContractService: BlockitixContractService, private authService: AuthService, private staticDataService: StaticDataService, private uploadService: UploadService) { }
+  constructor(private eventService: EventService, private router: Router, private blockitixContractService: BlockitixContractService, private authService: AuthService, private staticDataService: StaticDataService, private uploadService: IPFSService) { }
 
   async ngOnInit(): Promise<void> {
     this.cities = (await this.staticDataService.getCities())?.map(city => city.name);
@@ -45,6 +45,8 @@ export class EventsComponent implements OnInit {
     this.isCreator = Number(this.authInfo?.role) === Role.CREATOR;
 
     this.events = (await this.eventService.getAllEvents()) ?? [];
+
+    this.filter();
   }
 
   async filter()

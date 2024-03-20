@@ -20,7 +20,7 @@ contract Blockitix is Ownable, ERC721, ERC721URIStorage, ERC721Burnable {
 
         uint remainingTickets;
 
-        string seatsFormat;
+        string seatsFormatURL;
 
         address owner;
 
@@ -40,8 +40,6 @@ contract Blockitix is Ownable, ERC721, ERC721URIStorage, ERC721Burnable {
     }
 
     mapping(uint256 => SeatType[]) eventSeatTypes;
-
-    // mapping(uint256 => uint[]) seatsTaken;
 
     // seatIdFormat: layoutName;row;column
 
@@ -68,6 +66,12 @@ contract Blockitix is Ownable, ERC721, ERC721URIStorage, ERC721Burnable {
 
         uint price;
     }
+
+    struct Token {
+        string seatId;
+
+        string tokenURI;
+    }
     
     uint256 totalEvents;
     uint256 totalTickets;
@@ -80,20 +84,16 @@ contract Blockitix is Ownable, ERC721, ERC721URIStorage, ERC721Burnable {
 
     event EventCreated(uint indexed eventId, address indexed creator);
 
-    event BoughtTicket(uint ticketId, address buyer);
-
-    event RedeemedTicket(uint indexed ticketId);
-
     event EventUpdated(uint indexed eventId);
+
+    event BoughtTickets(uint[] ticketIds, address buyer);
 
     modifier stopInEmergency() {
         require(!stopped, "Contract is in emergency stop");
         _;
     }
     
-    constructor(string memory _name, string memory _symbol) ERC721(_name, _symbol) {
-        
-    }
+    constructor(string memory _name, string memory _symbol) ERC721(_name, _symbol) { }
 
     function toggleEmergencyStop() public onlyOwner {
         stopped = !stopped;
@@ -125,12 +125,12 @@ contract Blockitix is Ownable, ERC721, ERC721URIStorage, ERC721Burnable {
         return totalEvents;
     }
 
-    function cancelEvent(uint256 eventId) external
+    function toggleCancelEvent(uint256 eventId) external
     {
-        events[eventId].isCanceled = true;
+        events[eventId].isCanceled = !events[eventId].isCanceled;
     }
 
-    function buyTicket(uint256 eventId, string memory seatId, string memory _tokenURI) external stopInEmergency payable {
+    function buyTicket(uint256 eventId, string memory seatId, string memory _tokenURI) private returns(uint256) {
         require(events[eventId].owner != address(0), "Event does not exist");
 
         require(events[eventId].remainingTickets > 0, "There are no remaining tickets");
@@ -152,13 +152,28 @@ contract Blockitix is Ownable, ERC721, ERC721URIStorage, ERC721Burnable {
         _safeMint(msg.sender, totalTickets);
         _setTokenURI(totalTickets, _tokenURI);
 
+        ticketIds.push(totalTickets);
+
+        return totalTickets;
+    }
+
+    function buyTickets(uint256 eventId, Token[] memory tokens) external stopInEmergency payable
+    {
+        require(!events[eventId].isCanceled, "Event is canceled. You cannot buy tickets for that event!");
+        
+        uint256[] memory ticketIdsMem = new uint256[](tokens.length);
+
+        for(uint i = 0; i < tokens.length; i++)
+        {
+            uint256 id = buyTicket(eventId, tokens[i].seatId, tokens[i].tokenURI);
+            ticketIdsMem[i] = id;
+        }
+
         (bool success, ) = payable(events[eventId].owner).call{value: msg.value}("");
 
         require(success, "Withdrawal transfer failed.");
 
-        ticketIds.push(totalTickets);
-
-        emit BoughtTicket(totalTickets, msg.sender);
+        emit BoughtTickets(ticketIdsMem, msg.sender);
     }
 
     function getAllEvents() external view returns (EventData[] memory)
@@ -168,27 +183,17 @@ contract Blockitix is Ownable, ERC721, ERC721URIStorage, ERC721Burnable {
         for(uint i = 0; i < eventIds.length; i++)
         {
             ret[i] = events[eventIds[i]];
-            ret[i].seatsFormat = "";
         }
 
         return ret;
     }
 
-    function getSeatLayout(uint256 eventId) external view returns (string memory seatsFormat, SeatType[] memory seatsType)
+    function getSeatLayout(uint256 eventId) external view returns (string memory seatsFormatURL, SeatType[] memory seatsType)
     {
-        string memory seatFormat = events[eventId].seatsFormat;
+        string memory seatFormat = events[eventId].seatsFormatURL;
         SeatType[] memory seatTypes = eventSeatTypes[eventId];
 
         return (seatFormat, seatTypes);
-    }
-
-    function getOneEventShort(uint256 eventId) external view returns (EventData memory)
-    {
-        EventData memory eventMem = events[eventId];
-
-        eventMem.seatsFormat = "";
-
-        return eventMem;
     }
 
     function getOneEvent(uint256 eventId) external view returns (EventData memory)
@@ -229,17 +234,6 @@ contract Blockitix is Ownable, ERC721, ERC721URIStorage, ERC721Burnable {
 
         return events[eventId];
     }
-
-    // function redeemTicket(uint ticketId, uint eventId) external stopInEmergency {
-    //     address owner = events[eventId].owner;
-    //     require(owner > address(0), "The event does not exist");
-
-    //     require(msg.sender == owner, "Sender must be the owner of the event");
-
-    //     // events[eventId][ticketId] = msg.sender;
-
-    //     emit RedeemedTicket(ticketId);
-    // }
 
     function getTakenSeats(uint256 eventId) external view returns(string[] memory)
     {

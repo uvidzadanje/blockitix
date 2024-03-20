@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class UploadService {
+export class IPFSService {
   private client: IPFSHTTPClient;
 
   constructor()
@@ -18,5 +18,12 @@ export class UploadService {
     const { cid } = await this.client.add(file);
 
     return cid;
+  }
+
+  async get(cid: string)
+  {
+    const file = this.client.get(cid);
+
+    return file;
   }
 }

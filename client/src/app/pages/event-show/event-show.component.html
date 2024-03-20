@@ -1,6 +1,10 @@
 <div class="hero">
-  <h1 class="hero-title">{{event?.name}}</h1>
-  <img [src]="event?.coverURL" [alt]="event?.coverURL" style="flex: 2;">
+  <div class="hero-title">
+    <h1>{{event?.name}}</h1>
+  </div>
+  <div class="hero-image">
+    <img [src]="event?.coverURL" [alt]="event?.coverURL">
+  </div>
 </div>
 
 <div id="wrapp" style="flex: 1;">
@@ -12,27 +16,30 @@
             <mat-card-title style="text-align: center; margin-bottom: 30px; font-size: 30px;">{{event?.name}}</mat-card-title><button mat-raised-button color="primary" disabled *ngIf="event?.isCanceled">CANCELED</button>
             <mat-card-title style="text-align: center;">{{event?.location}}, {{event?.city}}</mat-card-title>
             <mat-card-title style="text-align: center;">{{event?.datetime | date:"dd.MM.YYYY. hh:mm"}}</mat-card-title>
-            <mat-card-title *ngIf="!event?.isCanceled" style="display: flex; justify-content: center; margin-top: 30px;">
-              <button mat-button color="warn" *ngIf="isOwner && isCreator" (click)="cancelEvent()">Cancel</button>
-              <button mat-button color="primary" *ngIf="isOwner && isCreator" (click)="goEdit()">Edit</button>
+            <mat-card-title *ngIf="isOwner && isCreator" style="display: flex; justify-content: center; margin-top: 30px;">
+              <button mat-button color="warn" (click)="toggleCancelEvent()">
+                <span *ngIf="!event?.isCanceled">Cancel</span>
+                <span *ngIf="event?.isCanceled">Reactivate</span>
+              </button>
+              <button mat-button color="primary" (click)="goEdit()">Edit</button>
             </mat-card-title>
           </mat-card-header>
+          <mat-card-header style="justify-content: center;">
+            <mat-card-title style="font-size: 30px; text-align: center; margin-bottom: 20px;">Description</mat-card-title>
+          </mat-card-header>
           <mat-card-content>
-            <ng-container *ngIf="event">
-              <app-ticket [event]="event" [isCreator]="isCreator" [eventName]="event.name"></app-ticket>
-            </ng-container>
+            <div [innerHTML]="description | safeHtml"></div>
           </mat-card-content>
         </mat-card>
       </ng-template>
     </mat-tab>
-    <mat-tab label="Description">
+    <mat-tab label="Buy Ticket">
       <ng-template matTabContent>
         <mat-card>
-          <mat-card-header>
-            <mat-card-title style="font-size: 30px;">Description</mat-card-title>
-          </mat-card-header>
           <mat-card-content>
-            <div [innerHTML]="description"></div>
+            <ng-container *ngIf="event">
+              <app-ticket [event]="event" [isCreator]="isCreator" [eventName]="event.name"></app-ticket>
+            </ng-container>
           </mat-card-content>
         </mat-card>
       </ng-template>

@@ -16,6 +16,7 @@
   color: white;
   background-color: rgba(0, 0, 0, 0.5);
   padding: 20px;
+  text-align: center;
 }
 
 .hero-text h1 {
@@ -27,6 +28,11 @@
 .hero-text p {
   margin: 0;
   font-size: 16px;
+}
+
+#wrapp
+{
+  padding: 20px;
 }
 
 #wrapp h1 {

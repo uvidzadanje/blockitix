@@ -1,17 +1,35 @@
 .hero {
   display: flex;
   justify-content: end;
-  padding: 20px;
   background-color: #003df5;
+  padding: 20px;
   gap: 20px;
+  height: calc((100vh - 64px - 40px) * 0.7);
 }
 
 .hero-title {
-  color: white;
-  font-size: 50px;
-  font-weight: bold;
-  flex: 1;
+  flex: 1 1 0px;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.hero-title h1
+{
+  color: white;
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.hero-image
+{
+  flex: 1 1 0px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+
+.hero-image img
+{
+  max-width: 100%;
 }

@@ -31,11 +31,11 @@
             <mat-option [value]="category" *ngFor="let category of eventCategories">{{category}}</mat-option>
           </mat-select>
         </mat-form-field>
+        <angular-editor [config]="editorConfig" formControlName="description"></angular-editor>
         <div class="input-group">
           <button type="button" mat-raised-button (click)="fileInput.click()">Choose Cover Image</button>
           <input hidden #fileInput type="file" accept="image/png, image/gif, image/jpeg" (change)="onFileChange($event)">
         </div>
-        <angular-editor [config]="editorConfig" formControlName="description"></angular-editor>
         <div style="margin-top: 10px; margin-bottom: 10px;">
           <img [src]="coverImageSrc" [alt]="coverImageSrc">
         </div>

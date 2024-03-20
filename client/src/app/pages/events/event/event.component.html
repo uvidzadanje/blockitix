@@ -6,9 +6,12 @@
     <div style="align-items: center; margin-bottom: 10px;"><mat-card-title><a [routerLink]="['/event', event?.id]" class="title-link">{{event?.name}}</a></mat-card-title><button mat-raised-button color="primary" disabled style="margin-left: auto;" *ngIf="event?.isCanceled">CANCELED</button></div>
     <mat-card-content style="flex: 1; margin-bottom: 0;">
       <p>{{event?.datetime | date:"dd.MM.YYYY. hh:mm"}}  | {{event?.location}}, {{event?.city}}</p>
-      <div *ngIf="!event?.isCanceled" style="display: flex; margin-bottom: 0; align-items: center;">
+      <div style="display: flex; margin-bottom: 0; align-items: center;">
         <p style="margin-bottom: 0; color: gray;">Remaining: {{event?.remainingTickets}}</p>
-        <button mat-button color="warn" *ngIf="isOwner && isCreator" (click)="cancelEvent()" style="margin-left: auto;">Cancel</button>
+        <button mat-button color="warn" *ngIf="isOwner && isCreator" (click)="toggleCancelEvent()" style="margin-left: auto;">
+          <span *ngIf="!event?.isCanceled">Cancel</span>
+          <span *ngIf="event?.isCanceled">Reactivate</span>
+        </button>
         <button mat-button color="primary" *ngIf="isOwner && isCreator" (click)="goEdit()">Edit</button>
       </div>
     </mat-card-content>

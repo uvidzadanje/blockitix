@@ -36,7 +36,11 @@ export class AppComponent implements OnInit {
 
     this.loadingService.loading$.subscribe((isLoading) => {
       this.isLoading = isLoading;
-    })
+    });
+
+    (window as any).ethereum.on("accountsChanged", () => {
+      window.location.reload();
+    });
   }
 
 }

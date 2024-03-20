@@ -3,7 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Event } from 'src/app/shared/models/event';
 import { Role } from 'src/app/shared/models/user';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { BlockitixContractService } from 'src/app/shared/services/blockitix-contract.service';
 import { EventService } from 'src/app/shared/services/event.service';
+import { IPFSService } from 'src/app/shared/services/ipfs.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-event-show',
@@ -16,7 +19,7 @@ export class EventShowComponent implements OnInit {
   isCreator?: boolean;
   description?: string;
 
-  constructor(private eventService: EventService, private route: ActivatedRoute, private router: Router, private authService: AuthService) {
+  constructor(private ipfsService: IPFSService, private blockitixContractService: BlockitixContractService, private eventService: EventService, private route: ActivatedRoute, private router: Router, private authService: AuthService) {
 
   }
 
@@ -29,7 +32,15 @@ export class EventShowComponent implements OnInit {
       return;
     }
 
-    this.event = (await this.eventService.getOneEvent(BigInt(+id)))!;
+    let event = (await this.eventService.getOneEvent(BigInt(+id)))!;
+    this.event = {
+      ...event,
+      descriptionURL: `${environment.ipfsStorageURL}/${event.descriptionURL}`,
+      coverURL: `${environment.ipfsStorageURL}/${event.coverURL}`,
+      seatsFormatURL: `${environment.ipfsStorageURL}/${event.seatsFormatURL}`
+    }
+    console.log(this.event);
+
     this.description = await (await fetch(this.event.descriptionURL)).text();
 
     let authInfo = await this.authService.getAuthUser();
@@ -38,12 +49,8 @@ export class EventShowComponent implements OnInit {
     this.isOwner = this.event.owner === authInfo?.address;
   }
 
-  async cancelEvent() {
-    await this.eventService.cancelEvent(this.event?.id!);
-    if(this.event)
-    {
-      this.event.isCanceled = true;
-    }
+  async toggleCancelEvent() {
+    await this.eventService.toggleCancelEvent(this.event?.id!);
   }
 
   goEdit() {

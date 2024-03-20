@@ -43,7 +43,8 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
 import { HttpClientModule } from '@angular/common/http';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { HomeComponent } from './pages/home/home.component'
+import { HomeComponent } from './pages/home/home.component';
+import { SafeHtmlPipe } from './shared/pipes/safe-html.pipe'
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { HomeComponent } from './pages/home/home.component'
     NotFoundComponent,
     TicketValidationComponent,
     EventShowComponent,
-    HomeComponent
+    HomeComponent,
+    SafeHtmlPipe
   ],
   imports: [
     BrowserModule,

@@ -21,7 +21,7 @@ export interface Event extends Model {
 
   location: string;
 
-  seatFormat: string;
+  seatsFormatURL: string;
 
   isCanceled: boolean;
 

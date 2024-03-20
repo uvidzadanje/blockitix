@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ConstructorFragment, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import { AlertService } from '../../components/parts/alert/alert.service';
 
 @Injectable({

@@ -9,30 +9,6 @@ import { registerSchema } from "../utils/validation";
 const userService = new UserService();
 
 export class AuthController {
-    // async login(req: Request, res: Response, next: NextFunction)
-    // {
-    //     try {
-    //         await loginSchema.parseAsync(req.body);
-    //         const user = req.body as UserLoginDto;
-
-    //         const userFromDB = (await userService.get(user.email))[0] as User;
-
-    //         if(!userFromDB) {
-    //             throw new ApplicationError(httpErrorTypes.UNAUTHORIZED);
-    //         }
-
-    //         if(!(await compareValues(user.password, userFromDB.password))) {
-    //             throw new ApplicationError(httpErrorTypes.UNAUTHORIZED);
-    //         }
-
-    //         const token = signToken(userFromDB, "1d");
-
-    //         return sendResponse(res, token);
-    //     } catch (error) {
-    //         next(error);
-    //     }
-    // }
-
     async register(req: Request, res: Response, next: NextFunction)
     {
         try {
@@ -47,24 +23,6 @@ export class AuthController {
             next(error);
         }
     }
-
-    // async isAuth(req: Request, res: Response, next: NextFunction)
-    // {
-    //     try {
-    //         const token = req.headers["authorization"] as string | undefined | null;
-
-    //         if(!token || token === "undefined" || token === "null")
-    //             throw new ApplicationError(httpErrorTypes.UNAUTHORIZED);
-            
-    //         const data = encodeToken(token);
-
-    //         req.body.auth = data;
-
-    //         return next();
-    //     } catch (error) {
-    //         next(error);
-    //     }
-    // }
 
     async getAuthInfo(req: Request, res: Response, next: NextFunction)
     {

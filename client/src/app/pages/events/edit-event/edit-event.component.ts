@@ -8,7 +8,7 @@ import { BlockitixContractService } from 'src/app/shared/services/blockitix-cont
 import { EventService } from 'src/app/shared/services/event.service';
 import { LoadingService } from 'src/app/shared/services/loading.service';
 import { StaticDataService } from 'src/app/shared/services/static-data.service';
-import { UploadService } from 'src/app/shared/services/upload.service';
+import { IPFSService } from 'src/app/shared/services/ipfs.service';
 import { DateValidator } from 'src/app/shared/validators/date.validator';
 import { environment } from 'src/environments/environment';
 
@@ -61,7 +61,7 @@ export class EditEventComponent {
 
   constructor(
     private eventService: EventService,
-    private uploadService: UploadService,
+    private uploadService: IPFSService,
     private route: ActivatedRoute,
     private router: Router,
     private staticDataService: StaticDataService,
@@ -83,11 +83,12 @@ export class EditEventComponent {
     this.eventCategories = (await this.staticDataService.getEventCategories())?.map(category => category.name);
 
     this.event = (await this.eventService.getOneEvent(BigInt(+id)))!;
-    this.coverImageSrc = this.event.coverURL;
+    console.log(this.event);
+    this.coverImageSrc = `${environment.ipfsStorageURL}/${this.event.coverURL}`;
 
     let image = await (await fetch(this.coverImageSrc)).blob();
 
-    this.form.patchValue({cover:image, name: this.event.name, datetime: this.event.datetime, city: this.event.city, location: this.event.location, description: await (await fetch(this.event.descriptionURL)).text(), category: this.event.category});
+    this.form.patchValue({cover:image, name: this.event.name, datetime: this.event.datetime, city: this.event.city, location: this.event.location, description: await (await fetch(`${environment.ipfsStorageURL}/${this.event.descriptionURL}`)).text(), category: this.event.category});
   }
 
   onFileChange(event: Event) {
@@ -100,6 +101,8 @@ export class EditEventComponent {
     reader.readAsDataURL(file);
 
     this.form.patchValue({cover: file});
+
+    this.form.controls["cover"].markAsDirty();
   }
 
   async edit() {
@@ -112,8 +115,8 @@ export class EditEventComponent {
     await this.eventService.editEvent({
       id: this.event?.id,
       ...this.form.value,
-      coverURL: `${environment.ipfsStorageURL}/${await this.uploadService.upload(this.form.value.cover)}`,
-      descriptionURL: `${environment.ipfsStorageURL}/${await this.uploadService.upload(this.form.value.description)}`
+      coverURL: `${this.form.controls["cover"].dirty ? await this.uploadService.upload(this.form.value.cover) : this.event?.coverURL}`,
+      descriptionURL: `${this.form.controls["description"].dirty ? await this.uploadService.upload(this.form.value.description) : this.event?.descriptionURL}`
     })
   }
 }

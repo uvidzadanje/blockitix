@@ -78,7 +78,7 @@
         </mat-card-header>
         <mat-card-content>
           <div *ngFor="let type of types; index as i" style="display: flex; gap: 10px; align-items: center; cursor: pointer;">
-            <div class="seat" [style]="'background-color:'+type.colorMark" style="border:none"></div>
+            <div class="seat" [style.backgroud-color]="type.colorMark" style="border:none"></div>
             <span>{{type.name}}</span>
             <button mat-button color="warn" (click)="removeType(i)"><mat-icon>close</mat-icon></button>
           </div>

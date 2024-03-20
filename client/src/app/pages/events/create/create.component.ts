@@ -1,19 +1,14 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormControlName, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
-import { ethers } from 'ethers';
 import { AlertService } from 'src/app/components/parts/alert/alert.service';
-import { CreateEvent } from 'src/app/shared/dto/createEvent.dto';
 import { BlockitixContractService } from 'src/app/shared/services/blockitix-contract.service';
 import { EventService } from 'src/app/shared/services/event.service';
 import { LoadingService } from 'src/app/shared/services/loading.service';
 import { StaticDataService } from 'src/app/shared/services/static-data.service';
-import { UploadService } from 'src/app/shared/services/upload.service';
-import { Web3Service } from 'src/app/shared/services/web3.service';
+import { IPFSService } from 'src/app/shared/services/ipfs.service';
 import { DateValidator } from 'src/app/shared/validators/date.validator';
-import { environment } from 'src/environments/environment';
 import { SeatGeneratorComponent } from '../../seat-generator/seat-generator.component';
 
 @Component({
@@ -24,8 +19,6 @@ import { SeatGeneratorComponent } from '../../seat-generator/seat-generator.comp
 export class CreateComponent implements OnInit {
   form: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required]),
-    // price: new FormControl(0, [Validators.required, Validators.min(0.01)]),
-    // totalTickets: new FormControl(0, [Validators.required, Validators.min(1), Validators.pattern("^[0-9]*$")]),
     datetime: new FormControl(new Date().toISOString().substring(0, 16), [
       Validators.required,
       DateValidator.GreaterThanToday,
@@ -58,7 +51,7 @@ export class CreateComponent implements OnInit {
       { class: 'calibri', name: 'Calibri' },
       { class: 'comic-sans-ms', name: 'Comic Sans MS' },
     ],
-    sanitize: true,
+    sanitize: false,
     toolbarPosition: 'top',
   };
 
@@ -76,7 +69,7 @@ export class CreateComponent implements OnInit {
     this.blockitixContractService.onEvent("EventCreated", (eventId) => {
       this.loadingService.disableLoading();
       this.alertService.alert$.next({type: "success", message: "Successfully created event!"});
-      this.router.navigate(["events"]);
+      this.router.navigate(["event", eventId]);
     });
 
     let { name, datetime, city, location, cover, category, description } =
@@ -93,20 +86,16 @@ export class CreateComponent implements OnInit {
         (acc, layout) => acc + layout.columns * layout.rows,
         0
       ),
-      seatFormat: JSON.stringify(layouts),
+      seatsFormatURL: `${await this.uploadService.upload(JSON.stringify(layouts))}`,
       isCanceled: false,
-      coverURL: `${
-        environment.ipfsStorageURL
-      }/${await this.uploadService.upload(cover)}`,
-      descriptionURL: `${
-        environment.ipfsStorageURL
-      }/${await this.uploadService.upload(description)}`,
+      coverURL: `${await this.uploadService.upload(cover)}`,
+      descriptionURL: `${await this.uploadService.upload(description)}`,
     });
   }
 
   constructor(
     private eventService: EventService,
-    private uploadService: UploadService,
+    private uploadService: IPFSService,
     private staticDataService: StaticDataService,
     private loadingService: LoadingService,
     private blockitixContractService: BlockitixContractService,

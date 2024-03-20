@@ -17,22 +17,25 @@ export class EventService {
 
   async getAllEvents() : Promise<Event[] | null>
   {
-    return await this.blockitixContractService.execute<Event[]>("getAllEvents");
+    const data = await this.blockitixContractService.execute<Event[]>("getAllEvents");
+
+    return data && data.map(event => this.getCopy(event));
   }
 
   async getOneEvent(eventId: bigint) : Promise<Event | null>
   {
-    return await this.blockitixContractService.execute<Event>("getOneEvent", eventId);
+    const data = await this.blockitixContractService.execute<Event>("getOneEvent", eventId);
+    return data && this.getCopy(data);
   }
 
   async createEvent(event: CreateEvent) : Promise<void>
   {
-    let {name, totalTickets, datetime, city, location, seatFormat, seatTypes, coverURL, descriptionURL, category} = event;
+    let {name, totalTickets, datetime, city, location, seatsFormatURL: seatFormatURL, seatTypes, coverURL, descriptionURL, category} = event;
     return (await this.blockitixContractService.execute(
       "createEvent",
       name,
       totalTickets,
-      seatFormat,
+      seatFormatURL,
       datetime,
       city,
       location,
@@ -43,14 +46,14 @@ export class EventService {
     ))!;
   }
 
-  async getSeatLayout(eventId: number) : Promise<{seatsFormat: string, seatsType: SeatType[]}>
+  async getSeatLayout(eventId: number) : Promise<{seatsFormatURL: string, seatsType: SeatType[]}>
   {
     return (await this.blockitixContractService.execute("getSeatLayout", eventId))!;
   }
 
-  async cancelEvent(eventId: number)
+  async toggleCancelEvent(eventId: number)
   {
-    await this.blockitixContractService.execute("cancelEvent", eventId);
+    await this.blockitixContractService.execute("toggleCancelEvent", eventId);
   }
 
   async editEvent(event: EditEvent)
@@ -66,6 +69,26 @@ export class EventService {
       event.descriptionURL,
       event.category
     )
+  }
+
+  private getCopy(event: Event): Event
+  {
+    return {
+      id: event.id,
+      name: event.name,
+      totalTickets: event.totalTickets,
+      remainingTickets: event.remainingTickets,
+      owner: event.owner,
+      datetime: event.datetime,
+      city: event.city,
+      location: event.location,
+      seatsFormatURL: event.seatsFormatURL,
+      isCanceled: event.isCanceled,
+      coverURL: event.coverURL,
+      descriptionURL: event.descriptionURL,
+      category: event.category,
+      seatTypes: []
+    };
   }
 
 }
