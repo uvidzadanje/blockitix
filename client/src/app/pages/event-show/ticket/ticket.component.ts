@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { SeatLayout } from 'src/app/pages/seat-generator/seat-generator.component';
 import { Event, SeatType } from 'src/app/shared/models/event';
 import { BlockitixContractService } from 'src/app/shared/services/blockitix-contract.service';
@@ -8,6 +8,8 @@ import { TicketService } from 'src/app/shared/services/ticket.service';
 import { environment } from 'src/environments/environment';
 import { IPFSService } from 'src/app/shared/services/ipfs.service';
 import { AlertService } from 'src/app/components/parts/alert/alert.service';
+import { PanZoomAPI, PanZoomConfig } from 'ngx-panzoom';
+import { Subscription } from 'rxjs';
 
 interface Seat {
   layout: SeatLayout;
@@ -20,7 +22,7 @@ interface Seat {
   templateUrl: './ticket.component.html',
   styleUrls: ['./ticket.component.css'],
 })
-export class TicketComponent implements OnInit {
+export class TicketComponent implements OnInit, OnDestroy {
   @Input() event?: Event;
   @Input() isCreator?: boolean;
   seatsTaken: {[name: string] : {[row: number]: number[]}} = {};
@@ -30,6 +32,18 @@ export class TicketComponent implements OnInit {
 
   selectedTypes: string[] = [];
   selectedSeats: Seat[] = [];
+
+  panZoomConfig: PanZoomConfig = new PanZoomConfig({
+    initialZoomLevel: 1,
+    freeMouseWheel: false,
+    zoomStepDuration: 0.1,
+    zoomOnDoubleClick: false,
+    friction: 10,
+    zoomOnMouseWheel: false
+  });
+
+  panZoomApiSubscription?: Subscription;
+  panZoomApi?: PanZoomAPI;
 
   constructor(
     private ticketService: TicketService,
@@ -41,6 +55,8 @@ export class TicketComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
+    this.panZoomApiSubscription = this.panZoomConfig.api.subscribe((api: PanZoomAPI) => this.panZoomApi = api);
+
     let data = await this.eventService.getSeatLayout(this.event?.id!);
     this.layouts = JSON.parse(await (await fetch(`${environment.ipfsStorageURL}/${data.seatsFormatURL}`)).text());
     this.seatsType = data.seatsType;
@@ -53,6 +69,22 @@ export class TicketComponent implements OnInit {
       this.addTakenSeat(name, +row, +column);
     });
   }
+
+  ngOnDestroy(): void {
+    this.panZoomApiSubscription?.unsubscribe();
+  }
+
+  zoomIn() {
+		this.panZoomApi?.zoomIn();
+	}
+
+	zoomOut() {
+		this.panZoomApi?.zoomOut();
+	}
+
+	reset() {
+		this.panZoomApi?.resetView();
+	}
 
   isTaken(layoutName: string, row: number, column: number)
   {

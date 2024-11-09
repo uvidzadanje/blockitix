@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ethers } from 'ethers';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavbarComponent implements OnInit {
 
-  constructor() { }
+  username?: string;
 
-  ngOnInit(): void {
+  constructor(private authService: AuthService) { }
+
+  async ngOnInit(): Promise<void> {
+    this.username = (await this.authService.getAuthUser())?.username;
+    console.log(this.username);
   }
 
 }

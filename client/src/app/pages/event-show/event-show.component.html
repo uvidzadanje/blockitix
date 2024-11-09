@@ -33,7 +33,7 @@
         </mat-card>
       </ng-template>
     </mat-tab>
-    <mat-tab label="Buy Ticket">
+    <mat-tab label="Buy Ticket" *ngIf="!event?.isCanceled">
       <ng-template matTabContent>
         <mat-card>
           <mat-card-content>

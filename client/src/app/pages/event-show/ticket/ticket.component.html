@@ -1,38 +1,49 @@
 <!-- <div id="wrapp" style="height: 600px; width: 1000px;"> -->
 <div id="wrapp" style="gap: 20px; flex-direction: row; align-items: stretch;">
-  <mat-card style="width: 100%; padding: 0;">
+  <mat-card style="width: 100%;">
     <mat-card-header>
       <mat-card-title>Chose a seat</mat-card-title>
     </mat-card-header>
     <mat-card-content class="container" style="position: relative; height: 600px;">
-      <mat-card style="padding: 0; position:absolute" *ngFor="let layout of layouts"
-      [style.width.px]="layout.width"
-      [style.height.px]="layout.height"
-      [style.top.px]="layout.top"
-      [style.left.px]="layout.left"
-      >
-        <mat-card-header style="display: block;">
-          <mat-card-title style="display: flex; align-items: center;">{{layout.name}}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <div *ngFor="let row of [].constructor(layout.rows); index as i" class="row">
-              <span style="width: 10px;">{{i+1}}</span>
-              <button
-              *ngFor="let column of [].constructor(layout.columns); index as j"
-              style="cursor: pointer; background-color: transparent; border: none; box-shadow: none; padding: 0;"
-              (click)="toggleSelectSeat(layout, i, j)"
-              [matTooltip]="'Buy ticket at ' + layout.name + '\nRow: ' + (i + 1) + '\nColumn: ' + (j + 1)"
-              [disabled]="!isSelectedType(layout.type.name) || isTaken(layout.name, i, j) || isCreator"
+      <div style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; height: 550px;">
+        <pan-zoom [config]="panZoomConfig">
+          <div style="position: relative;">
+              <mat-card style="padding: 0; position:absolute" *ngFor="let layout of layouts"
+              [style.width.px]="layout.width"
+              [style.height.px]="layout.height"
+              [style.top.px]="layout.top"
+              [style.left.px]="layout.left"
               >
-              <mat-icon
-              [ngClass]="{'material-icons-outlined': isSelected(layout.name, i, j)}"
-              [style.color]="(!isSelectedType(layout.type.name) || isTaken(layout.name, i, j) ? 'lightgray' : layout.type.colorMark)"
-              [style.cursor]="!isCreator ? 'pointer' : 'not-allowed'"
-              >event_seat</mat-icon>
-              </button>
+                <mat-card-header style="display: block;">
+                  <mat-card-title style="display: flex; align-items: center;">{{layout.name}}</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <div *ngFor="let row of [].constructor(layout.rows); index as i" class="row">
+                      <span style="width: 10px;">{{i+1}}</span>
+                      <button
+                      *ngFor="let column of [].constructor(layout.columns); index as j"
+                      style="cursor: pointer; background-color: transparent; border: none; box-shadow: none; padding: 0;"
+                      (click)="toggleSelectSeat(layout, i, j)"
+                      [matTooltip]="'Buy ticket at ' + layout.name + '\nRow: ' + (i + 1) + '\nColumn: ' + (j + 1)"
+                      [disabled]="!isSelectedType(layout.type.name) || isTaken(layout.name, i, j) || isCreator"
+                      >
+                      <mat-icon
+                      [ngClass]="{'material-icons-outlined': isSelected(layout.name, i, j)}"
+                      [style.color]="(!isSelectedType(layout.type.name) || isTaken(layout.name, i, j) ? 'lightgray' : layout.type.colorMark)"
+                      [style.cursor]="!isCreator ? 'pointer' : 'not-allowed'"
+                      >event_seat</mat-icon>
+                      </button>
+                    </div>
+                </mat-card-content>
+              </mat-card>
             </div>
-        </mat-card-content>
-      </mat-card>
+          </pan-zoom>
+          <div class="footer-container" style="margin-top: 10px;">
+            <button mat-raised-button (click)="zoomIn()">+</button>
+            <button mat-raised-button (click)="zoomOut()">-</button>
+            <button mat-raised-button (click)="reset()">Reset</button>
+          </div>
+      </div>
     </mat-card-content>
   </mat-card>
   <div style="display: flex; gap: 20px; flex-direction: column;">

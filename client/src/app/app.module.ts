@@ -45,6 +45,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { HomeComponent } from './pages/home/home.component';
 import { SafeHtmlPipe } from './shared/pipes/safe-html.pipe'
+import { NgxPanZoomModule } from 'ngx-panzoom';
 
 @NgModule({
   declarations: [
@@ -93,7 +94,8 @@ import { SafeHtmlPipe } from './shared/pipes/safe-html.pipe'
     AngularEditorModule,
     HttpClientModule,
     MatTabsModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    NgxPanZoomModule
   ],
   providers: [],
   bootstrap: [AppComponent],

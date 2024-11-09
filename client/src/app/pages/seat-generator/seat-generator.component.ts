@@ -53,11 +53,13 @@ export class SeatGeneratorComponent implements OnInit {
       top: 0,
       left: 0,
     });
+    this.layoutForm.reset({rows: 1, columns : 1});
     formLayoutDirective.resetForm({ rows: 1, columns: 1 });
   }
 
   addType(formTypeDirective: FormGroupDirective) {
     this.types.push({ ...this.typeForm.value });
+    this.typeForm.reset({ colorMark: '#000000' });
     formTypeDirective.resetForm({ colorMark: '#000000' });
   }
 

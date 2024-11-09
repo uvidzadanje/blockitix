@@ -25,6 +25,7 @@
     "angularx-qrcode": "^13.0.15",
     "ethers": "^6.7.1",
     "ipfs-http-client": "^56.0.2",
+    "ngx-panzoom": "^13.0.0",
     "qrcode": "^1.5.3",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
